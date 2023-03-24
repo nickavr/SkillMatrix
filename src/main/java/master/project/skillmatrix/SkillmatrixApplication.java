@@ -21,6 +21,7 @@ import java.util.List;
 
 @SpringBootApplication
 public class SkillmatrixApplication {
+    //todo: cleanup
 
     @Autowired
     private EmployeeService employeeService;
