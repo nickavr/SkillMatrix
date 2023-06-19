@@ -10,32 +10,54 @@ import java.util.List;
 import java.util.Optional;
 
 import master.project.skillmatrix.DTO.ProjectDTO;
+import master.project.skillmatrix.services.EmployeeService;
 import master.project.skillmatrix.services.ProjectService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+//J-
 
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
 
     //~ ----------------------------------------------------------------------------------------------------------------
-    //~ Instance fields 
+    //~ Instance fields
     //~ ----------------------------------------------------------------------------------------------------------------
 
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private EmployeeService employeeService;
+
     //~ ----------------------------------------------------------------------------------------------------------------
-    //~ Methods 
+    //~ Methods
     //~ ----------------------------------------------------------------------------------------------------------------
 
     @GetMapping
     public ResponseEntity<List<ProjectDTO>> getAllProjects() {
         return Optional.ofNullable(projectService.findAll()).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/post")
+    public ResponseEntity<ProjectDTO> addEmployeeToProject(@RequestHeader("employeeEmail") String employeeEmail,
+                                                           @RequestHeader("projectName") String projectName) {
+        return Optional.ofNullable(projectService.addTeamMemberForProject(employeeEmail, projectName))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/deleteEmployee")
+    public ResponseEntity<Object> removeEmployeeFromProject(@RequestHeader("employeeEmail") String employeeEmail,
+                                          @RequestHeader("projectName") String projectName) {
+        projectService.deleteTeamMemberForProject(employeeEmail, projectName);
+        return ResponseEntity.noContent().build();
+    }
 }
+//J+
